@@ -1,5 +1,7 @@
 package com.felipe.tmpl.controller;
 import com.felipe.tmpl.dto.TransactionDTO;
+import com.felipe.tmpl.repository.PatientRepository;
+import com.felipe.tmpl.service.PatientService;
 import com.felipe.tmpl.service.TransactionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,9 +16,13 @@ import java.util.List;
 public class DashboardController {
 
     private final TransactionService transactionService;
+    private final PatientService patientService;
 
-    public DashboardController(TransactionService transactionService) {
+    public DashboardController(TransactionService transactionService,
+                               PatientService patientService) {
         this.transactionService = transactionService;
+        this.patientService = patientService;
+
     }
 
     /**
@@ -32,6 +38,12 @@ public class DashboardController {
         return "pages/dashboard";
     }
 
+    @GetMapping
+    public String index(Model model) {
+        var patients = patientService.getAll();
+        model.addAttribute("patients", patients);
+        return "pages/dashboard";
+    }
     /**
      * Rota de atualização (Refresh).
      * Atendida quando o HTMX faz um hx-get="/dashboard/refresh"
