@@ -55,7 +55,7 @@ content = @`
                     <thead>
                     <tr>
                         <th>Nome</th>
-                        <th>Contacto</th>
+                        <th>Contato</th>
                         <th>CPF</th>
                         <th>Ações</th>
                     </tr>
@@ -107,17 +107,59 @@ content = @`
                 <div class="flex gap-4">
                     <div class="form-control w-1/2">
                         <label class="label"><span class="label-text">E-mail</span></label>
-                        <input type="email" name="email" required class="input input-bordered w-full" />
+                        <input
+                                type="email"
+                                name="email"
+                                required
+                                class="input input-bordered w-full"
+                                placeholder="exemplo@email.com"
+                                x-on:input="$el.value = $el.value.toLowerCase().trim().replace(/\s/g, '')"
+                        />
                     </div>
-                    <div class="form-control w-1/2">
+                    <div class="form-control w-1/2" x-data="{
+                            mask(value) {
+                                if (!value) return '';
+                                value = value.replace(/\D/g, '');
+                                if (value.length <= 10) {
+                                    return value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+                                } else {
+                                    return value.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+                                }
+                            }
+                        }">
                         <label class="label"><span class="label-text">Telefone</span></label>
-                        <input type="text" name="phone" required class="input input-bordered w-full" placeholder="55..." />
+                        <input
+                                type="text"
+                                name="phone"
+                                required
+                                class="input input-bordered w-full"
+                                placeholder="(11) 98333-2222"
+                                maxlength="15"
+                                x-on:input="$el.value = mask($el.value)"
+                        />
                     </div>
                 </div>
 
-                <div class="form-control w-full">
-                    <label class="label"><span class="label-text">CPF</span></label>
-                    <input type="text" name="cpf" class="input input-bordered w-full" />
+                <div class="form-control w-full" x-data="{
+                    maskCpf(value) {
+                        return value
+                            .replace(/[^a-zA-Z0-9]/g, '') // Remove o que não é alfanumérico
+                            .toUpperCase()               // O padrão de letras é maiúsculo
+                            .replace(/^([a-zA-Z0-9]{3})([a-zA-Z0-9]{3})([a-zA-Z0-9]{3})([a-zA-Z0-9]{2})$/, '$1.$2.$3-$4') // Aplica a máscara completa
+                            .replace(/^([a-zA-Z0-9]{3})([a-zA-Z0-9])/, '$1.$2')
+                            .replace(/^([a-zA-Z0-9]{3})\.([a-zA-Z0-9]{3})([a-zA-Z0-9])/, '$1.$2.$3')
+                            .replace(/^([a-zA-Z0-9]{3})\.([a-zA-Z0-9]{3})\.([a-zA-Z0-9]{3})([a-zA-Z0-9])/, '$1.$2.$3-$4');
+                    }
+                }">
+                    <label class="label"><span class="label-text">CPF (Alfanumérico)</span></label>
+                    <input
+                            type="text"
+                            name="cpf"
+                            class="input input-bordered w-full"
+                            placeholder="12A.34B.56C-D7"
+                            maxlength="14"
+                            x-on:input="$el.value = maskCpf($el.value)"
+                    />
                 </div>
 
                 <div class="modal-action">
