@@ -1,6 +1,5 @@
 package com.felipe.tmpl.controller;
 import com.felipe.tmpl.dto.TransactionDTO;
-import com.felipe.tmpl.repository.PatientRepository;
 import com.felipe.tmpl.service.PatientService;
 import com.felipe.tmpl.service.TransactionService;
 import org.springframework.stereotype.Controller;
@@ -29,7 +28,7 @@ public class DashboardController {
      * Rota principal da Dashboard.
      * O Spring Boot + jte identificam automaticamente os arquivos em src/main/jte/pages
      */
-    @GetMapping
+    @GetMapping("/old")
     public String viewDashboard(Model model) {
         List<TransactionDTO> transactions = transactionService.getRecentTransactions();
         model.addAttribute("transactions", transactions);

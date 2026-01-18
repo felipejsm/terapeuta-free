@@ -1,67 +1,131 @@
 @import java.util.List
-@import com.felipe.tmpl.dto.TransactionDTO
-@param List<TransactionDTO> transactions
+@import com.felipe.tmpl.dto.PatientDTO
+@param List<PatientDTO> patients
 @param String currentUri
 
-@template.root(content = @`
-    <div class="p-6 space-y-6">
-
-        <div class="stats stats-vertical lg:stats-horizontal shadow w-full">
-            <div class="stat">
-                <div class="stat-title">Total Users</div>
-                <div class="stat-value text-primary">25.6K</div>
-                <div class="stat-desc">↗︎ 400 (22%) this month</div>
-            </div>
-            <div class="stat">
-                <div class="stat-title">Revenue</div>
-                <div class="stat-value text-secondary">$89,400</div>
-                <div class="stat-desc">↗︎ 12% increase</div>
-            </div>
-            <div class="stat">
-                <div class="stat-title">Active Projects</div>
-                <div class="stat-value text-accent">48</div>
-                <div class="stat-desc">12 completed this week</div>
-            </div>
+@template.root(
+currentUri = currentUri,
+content = @`
+    <div class="p-6">
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold">Painel do Terapeuta</h1>
+            <p class="text-base-content/60">Bem-vindo de volta! Aqui está o resumo do seu dia.</p>
         </div>
 
-        <div class="card bg-base-200 shadow-xl" x-data="{ loaded: true }">
-            <div class="card-body">
-                <h2 class="card-title">Activity Overview</h2>
-                <div class="h-64 flex items-center justify-center bg-base-300 rounded-lg">
-                    <p x-show="loaded" class="text-base-content/50">Chart logic here</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div class="card bg-primary text-primary-content shadow-xl hover:scale-105 transition-all cursor-pointer">
+                <label for="modal-paciente" class="card bg-primary text-primary-content shadow-xl hover:scale-105 transition-all cursor-pointer">
+                    <div class="card-body items-center text-center p-6">
+                        <span class="text-3xl">👤</span>
+                        <h2 class="card-title text-sm">Novo Paciente</h2>
+                    </div>
+                </label>
+            </div>
+
+            <div class="card bg-base-100 shadow-xl border-l-4 border-secondary">
+                <div class="card-body p-4">
+                    <div class="flex justify-between items-center">
+                        <h2 class="font-bold">Próxima Sessão</h2>
+                        <div class="badge badge-secondary text-xs">Em 20m</div>
+                    </div>
+                    <p class="text-sm">João Silva</p>
+                    <div class="card-actions justify-end mt-2">
+                        <button class="btn btn-xs btn-outline">Abrir Sala</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card bg-base-100 shadow-xl border-l-4 border-accent">
+                <div class="card-body p-4">
+                    <h2 class="font-bold">Anamneses Pendentes</h2>
+                    <p class="text-2xl font-bold text-accent">3</p>
+                    <p class="text-xs text-base-content/50">Finalize hoje</p>
                 </div>
             </div>
         </div>
 
-        <div class="card bg-base-200 shadow-xl">
-            <div class="card-body">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="card-title">Recent Transactions</h2>
-                    <button class="btn btn-sm btn-primary"
-                            hx-get="/dashboard/refresh"
-                            hx-target="#transaction-body">
-                        Refresh Table
-                    </button>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="table table-zebra">
-                        <thead>
+        <div class="bg-base-100 shadow-xl rounded-box p-4">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-bold">Pacientes Recentes</h2>
+                <input type="text" placeholder="Pesquisar..." class="input input-bordered input-sm w-full max-w-xs" />
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="table table-zebra">
+                    <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Contacto</th>
+                        <th>CPF</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody-pacientes">
+                    @for(var patient : patients)
                         <tr>
-                            <th>ID</th>
-                            <th>Customer</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th>Actions</th>
+                            <td class="font-medium">${patient.name()}</td>
+                            <td class="text-sm">
+                                <div class="flex flex-col">
+                                    <span>${patient.phone()}</span>
+                                    <span class="text-xs opacity-50">${patient.email()}</span>
+                                </div>
+                            </td>
+                            <td>${patient.cpf()}</td>
+                            <td>
+                                <div class="flex gap-2">
+                                    <a href="https://api.whatsapp.com/send?phone=${patient.phone()}" target="_blank" class="btn btn-ghost btn-xs text-success">WPP</a>
+                                    <button class="btn btn-ghost btn-xs">Ver Ficha</button>
+                                </div>
+                            </td>
                         </tr>
-                        </thead>
-                        <tbody id="transaction-body">
-                        @template.fragments.transactions-table(transactions = transactions)
-                        </tbody>
-                    </table>
-                </div>
+                    @endfor
+                    @if(patients.isEmpty())
+                        <tr>
+                            <td colspan="4" class="text-center py-4 opacity-50">Nenhum paciente cadastrado.</td>
+                        </tr>
+                    @endif
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-`,
-currentUri = currentUri)
+    <input type="checkbox" id="modal-paciente" class="modal-toggle" />
+    <div class="modal" role="dialog">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg mb-4">Cadastrar Novo Paciente</h3>
+
+            <form hx-post="/pacientes"
+                  hx-target="#tbody-pacientes"
+                  hx-swap="innerHTML"
+                  hx-on::after-request="document.getElementById('modal-paciente').checked = false; this.reset();">
+
+                <div class="form-control w-full">
+                    <label class="label"><span class="label-text">Nome Completo</span></label>
+                    <input type="text" name="name" required class="input input-bordered w-full" />
+                </div>
+
+                <div class="flex gap-4">
+                    <div class="form-control w-1/2">
+                        <label class="label"><span class="label-text">E-mail</span></label>
+                        <input type="email" name="email" required class="input input-bordered w-full" />
+                    </div>
+                    <div class="form-control w-1/2">
+                        <label class="label"><span class="label-text">Telefone</span></label>
+                        <input type="text" name="phone" required class="input input-bordered w-full" placeholder="55..." />
+                    </div>
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label"><span class="label-text">CPF</span></label>
+                    <input type="text" name="cpf" class="input input-bordered w-full" />
+                </div>
+
+                <div class="modal-action">
+                    <label for="modal-paciente" class="btn">Cancelar</label>
+                    <button type="submit" class="btn btn-primary">Salvar Paciente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+`
+)

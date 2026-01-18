@@ -5,6 +5,7 @@ public record PatientDTO(
         String name,
         String email,
         String phone,
-        String cpf
+        String cpf,
+        String observations
 ) {
 }
