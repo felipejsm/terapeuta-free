@@ -29,4 +29,18 @@ public class PatientService {
         var patient = this.mapping.dtoToEntity(patientDTO);
         this.repository.save(patient);
     }
+
+    public PatientDTO getPatientById(final Long id) {
+        var patient = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Paciente Não Encontrado"));
+
+        return new PatientDTO(
+                patient.getId(),
+                patient.getName(),
+                patient.getEmail(),
+                patient.getPhone(),
+                patient.getCpf(),
+                patient.getObservations()
+        );
+    }
 }

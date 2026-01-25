@@ -15,7 +15,7 @@
         <td>
             <div class="flex gap-2">
                 <a href="https://api.whatsapp.com/send?phone=${patient.phone()}" target="_blank" class="btn btn-ghost btn-xs text-success">WPP</a>
-                <button class="btn btn-ghost btn-xs">Ver Ficha</button>
+                <a href="/pacientes/${patient.id()}" hx-boost="false" class="btn btn-ghost btn-xs">Ver Ficha</a>
             </div>
         </td>
     </tr>
