@@ -54,42 +54,38 @@ content = @`
                     </div>
                 </div>
             </div>
-
-            <input type="radio" name="my_tabs" role="tab" class="tab" aria-label="Evolução" />
-            <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="font-bold">Histórico de Sessões</h3>
-                    <button class="btn btn-sm btn-outline btn-primary">+ Nova Anotação</button>
-                </div>
-
-                <ul class="timeline timeline-vertical">
-                    @for(var session : sessions)
-                        <li>
-                            <div class="timeline-start">${session.formattedDate()}</div>
-                            <div class="timeline-middle">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 text-primary"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" /></svg>
-                            </div>
-                            <div class="timeline-end timeline-box shadow-sm border-base-300">
-                                ${session.notes()}
-                            </div>
-                            <hr class="bg-primary"/>
-                        </li>
-                    @endfor
-
-                    @if(sessions.isEmpty())
-                        <div class="text-center py-10 opacity-50 italic">
-                            Nenhuma sessão registrada para este paciente.
-                        </div>
-                    @endif
-                </ul>
-            </div>
-
             <input type="radio" name="my_tabs" role="tab" class="tab" aria-label="Arquivos" />
             <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
                 <h3 class="font-bold mb-4">Documentos e Exames</h3>
                 <div class="flex flex-col items-center justify-center border-2 border-dashed border-base-300 p-10 rounded-lg">
                     <p class="mb-4 opacity-60">Arraste arquivos aqui ou clique para upload</p>
                     <input type="file" class="file-input file-input-bordered w-full max-w-xs" />
+                </div>
+            </div>
+            <input type="radio" name="my_tabs" role="tab" class="tab" aria-label="Evolução" />
+            <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+
+                <div class="collapse collapse-plus bg-base-200 mb-6">
+                    <input type="checkbox" />
+                    <div class="collapse-title text-sm font-medium">
+                        + Nova Anotação de Sessão
+                    </div>
+                    <div class="collapse-content">
+                        <form hx-post="/pacientes/${patient.id()}/sessoes"
+                              hx-target="#timeline-container"
+                              hx-on::after-request="this.reset()">
+                            <div class="form-control">
+                                <textarea name="notes" required class="textarea textarea-bordered h-24" placeholder="O que aconteceu hoje?"></textarea>
+                            </div>
+                            <div class="flex justify-end mt-2">
+                                <button type="submit" class="btn btn-primary btn-sm">Salvar na Timeline</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="timeline-container">
+                    @template.fragments.sessions-timeline(sessions = sessions)
                 </div>
             </div>
         </div>

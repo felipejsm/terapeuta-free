@@ -6,10 +6,7 @@ import com.felipe.tmpl.service.PatientService;
 import com.felipe.tmpl.service.SessionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/pacientes")
@@ -38,4 +35,14 @@ public class PatientController {
         model.addAttribute("sessions", sessions);
         return "pages/patient-details";
     }
+
+    @PostMapping("/{id}/sessoes")
+    public String addSession(@PathVariable Long id, @RequestParam String notes, Model model) {
+        var patient = this.service.getPatientById(id);
+        this.sessionService.saveSession(patient, notes);
+        var sessions = this.sessionService.getSessionsByPatientId(id);
+        model.addAttribute("sessions", sessions);
+        return "fragments/sessions-timeline";
+    }
+
 }
