@@ -45,4 +45,11 @@ public class PatientController {
         return "fragments/sessions-timeline";
     }
 
+    @PostMapping("/{id}/anamnese")
+    public String updateAnamnesis(@PathVariable Long id, @RequestParam String observations, Model model) {
+        var patient = this.service.savePatientAnamnse(id, observations);
+        model.addAttribute("patient", patient);
+        return "fragments/anamnesis-content"; // Retornaremos apenas o texto salvo
+    }
+
 }

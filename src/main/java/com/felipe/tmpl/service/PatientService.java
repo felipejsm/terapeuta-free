@@ -43,4 +43,40 @@ public class PatientService {
                 patient.getObservations()
         );
     }
+
+    public PatientDTO savePatientAnamnse(final Long id, final String observations) {
+        var patient = getPatientById(id);
+        PatientDTO patientDTO = new PatientDTO(
+                patient.id(),
+                patient.name(),
+                patient.email(),
+                patient.phone(),
+                patient.cpf(),
+                observations
+        );
+        var patientEntity = repository.save(fromDtoToEntity(patientDTO));
+        return fromEntityToDto(patientEntity);
+    }
+
+    private Patient fromDtoToEntity(final PatientDTO patientDTO) {
+        return new Patient(
+                patientDTO.id(),
+                patientDTO.name(),
+                patientDTO.email(),
+                patientDTO.phone(),
+                patientDTO.cpf(),
+                patientDTO.observations()
+        );
+    }
+
+    private PatientDTO fromEntityToDto(final Patient patient) {
+        return new PatientDTO(
+                patient.getId(),
+                patient.getName(),
+                patient.getEmail(),
+                patient.getPhone(),
+                patient.getCpf(),
+                patient.getObservations()
+        );
+    }
 }

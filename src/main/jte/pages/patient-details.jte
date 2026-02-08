@@ -39,18 +39,16 @@ content = @`
             <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
-                        <h3 class="font-bold mb-4">Dados Pessoais</h3>
-                        <div class="space-y-2">
-                            <p><span class="opacity-60">E-mail:</span> ${patient.email()}</p>
-                            <p><span class="opacity-60">Telefone:</span> ${patient.phone()}</p>
-                            <p><span class="opacity-60">CPF:</span> ${patient.cpf()}</p>
+                        <h3 class="font-bold mb-4 text-lg">Dados Pessoais</h3>
+                        <div class="space-y-3">
+                            <p><span class="opacity-60 font-semibold">E-mail:</span> ${patient.email()}</p>
+                            <p><span class="opacity-60 font-semibold">Telefone:</span> ${patient.phone()}</p>
+                            <p><span class="opacity-60 font-semibold">CPF:</span> ${patient.cpf()}</p>
                         </div>
                     </div>
-                    <div>
-                        <h3 class="font-bold mb-4">Anamnese Inicial</h3>
-                        <textarea class="textarea textarea-bordered w-full h-32"
-                                  placeholder="Descreva as queixas principais e histórico..."></textarea>
-                        <button class="btn btn-sm btn-primary mt-2">Salvar Anotação</button>
+
+                    <div id="anamnesis-section">
+                        @template.fragments.anamnesis-content(patient = patient)
                     </div>
                 </div>
             </div>
